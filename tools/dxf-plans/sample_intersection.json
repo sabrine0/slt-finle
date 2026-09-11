@@ -1,0 +1,57 @@
+{
+  "carrefour": "C99",
+  "title": "Av Exemple - Bd Demonstration",
+  "ville": "Fes",
+  "echelle": "1/250",
+  "format": "A3",
+  "date": "2026-05-21",
+  "indice": "A",
+  "zone": "Cha",
+  "phase": "EXE",
+  "discipline": "SLT",
+  "emetteur": "TOM",
+  "numero": "00099",
+
+  "armoire": { "pos": [212, 168] },
+
+  "streets": [
+    { "name": "Av Exemple",        "pos": [40, 250],  "angle": 0,   "height": 6 },
+    { "name": "Bd Demonstration",  "pos": [300, 60],  "angle": 90,  "height": 6 }
+  ],
+
+  "supports": [
+    { "id": "P1", "type": "poteau",  "pos": [150, 200], "angle": 0,
+      "ref": "C99-A-3.6", "signals": ["R11v_222", "R12", "anticipation"] },
+    { "id": "P2", "type": "potence", "pos": [255, 205], "angle": 180,
+      "ref": "C99-B-4.5", "signals": ["R11v_333"] },
+    { "id": "P3", "type": "poteau",  "pos": [255, 135], "angle": 270,
+      "ref": "C99-C-3.6", "signals": ["R11v_222", "R12", "croix_grecque", "bap"] },
+    { "id": "P4", "type": "potelet", "pos": [150, 135], "angle": 90,
+      "ref": "C99-D-2.6", "signals": ["R12", "bap"] }
+  ],
+
+  "loops": [
+    { "id": "Bcl_01", "type": "vp2",        "pos": [120, 195], "angle": 0,  "size": [16, 8] },
+    { "id": "Bcl_02", "type": "vp1",        "pos": [285, 200], "angle": 0,  "size": [8, 8] },
+    { "id": "Bsat_01","type": "saturation", "pos": [285, 140], "angle": 0,  "size": [10, 8] }
+  ],
+
+  "chambers": [
+    { "type": "tirage",       "pos": [175, 185] },
+    { "type": "raccordement", "pos": [235, 185] },
+    { "type": "tirage",       "pos": [235, 150] }
+  ],
+
+  "ducts": [
+    { "type": "ceinturage", "points": [[175,185],[235,185],[235,150],[175,150],[175,185]] },
+    { "type": "support",    "points": [[175,185],[150,200]] },
+    { "type": "support",    "points": [[235,185],[255,205]] },
+    { "type": "boucle",     "points": [[175,185],[120,195]] },
+    { "type": "fibre",      "points": [[235,150],[212,168]] }
+  ],
+
+  "arrows": [
+    { "from": [60, 210],  "to": [110, 210] },
+    { "from": [360, 90],  "to": [360, 140] }
+  ]
+}

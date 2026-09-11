@@ -1,0 +1,508 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050709;
+  --foreground: #edf3ee;
+  color-scheme: dark;
+}
+
+/*
+ * STLS Studio semantic palette.
+ *
+ * Tokens live under --stls-* and are overridden per theme via the
+ * [data-theme="..."] attribute set by ThemeProvider.  Keep the police /
+ * operations dashboard on its fixed dark look — the theme attribute is
+ * scoped to the Studio shell only, so the body gradient above stays dark
+ * across routes.
+ */
+:root,
+[data-theme="dark"] {
+  --stls-surface-0: #050709;
+  --stls-surface-1: #0a0d10;
+  --stls-surface-2: #0e1318;
+  --stls-surface-3: #11161b;
+  --stls-canvas: #040608;
+  --stls-ink-0: #f3f7f1;
+  --stls-ink-1: #d8dde3;
+  --stls-ink-2: #8a929e;
+  --stls-ink-3: #5a6470;
+  --stls-stroke-0: rgba(255, 255, 255, 0.06);
+  --stls-stroke-1: rgba(255, 255, 255, 0.10);
+  --stls-stroke-2: rgba(255, 255, 255, 0.18);
+  --stls-hover: rgba(255, 255, 255, 0.05);
+  --stls-accent: #ffb547;
+  --stls-accent-ink: #ffb547;
+  --stls-accent-surface: #14100a;
+  --stls-accent-stroke: #3c2e10;
+  --stls-sig-green: #39d98a;
+  --stls-sig-green-ink: #a8eac2;
+  --stls-sig-green-surface: #0d1913;
+  --stls-sig-green-stroke: #1d4a34;
+  --stls-sig-yellow: #ffb547;
+  --stls-sig-yellow-ink: #ffd089;
+  --stls-sig-yellow-surface: #141008;
+  --stls-sig-yellow-stroke: #5c4418;
+  --stls-sig-red: #ff5f5f;
+  --stls-sig-red-ink: #ff9a9a;
+  --stls-sig-red-surface: #180d0d;
+  --stls-sig-red-stroke: #5a1d1d;
+  --stls-danger: #ff5f5f;
+  --stls-danger-ink: #ffb0b0;
+  --stls-danger-surface: #180d0d;
+  --stls-danger-stroke: #5a1d1d;
+  --stls-info-ink: #8ed2ef;
+  --stls-scrollbar-track: #0a1013;
+  --stls-scrollbar-thumb: #243136;
+
+  /* Intersection diagram — realistic dark asphalt + white markings. */
+  --stls-asphalt-0: #161b22;
+  --stls-asphalt-1: #0a0e13;
+  --stls-road-0: #1d232b;
+  --stls-road-1: #161b22;
+  --stls-lane-divider: #3a4450;
+  --stls-stop-bar: #f5f7f4;
+  --stls-crosswalk: #e8ecea;
+  --stls-island: #11161b;
+  --stls-island-stroke: #2a313a;
+  --stls-badge-fill: #0a0d10;
+  --stls-badge-stroke: #2a313a;
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --stls-surface-0: #eef1f4;
+  --stls-surface-1: #ffffff;
+  --stls-surface-2: #f6f8fa;
+  --stls-surface-3: #eceff3;
+  --stls-canvas: #f8f9fb;
+  --stls-ink-0: #0b1219;
+  --stls-ink-1: #1c2732;
+  --stls-ink-2: #56636f;
+  --stls-ink-3: #8b9399;
+  --stls-stroke-0: rgba(13, 24, 36, 0.08);
+  --stls-stroke-1: rgba(13, 24, 36, 0.14);
+  --stls-stroke-2: rgba(13, 24, 36, 0.28);
+  --stls-hover: rgba(13, 24, 36, 0.05);
+  --stls-accent: #a55c00;
+  --stls-accent-ink: #7a4400;
+  --stls-accent-surface: #fff4db;
+  --stls-accent-stroke: #e8b56b;
+  --stls-sig-green: #1f8c55;
+  --stls-sig-green-ink: #0a5732;
+  --stls-sig-green-surface: #e4f7ec;
+  --stls-sig-green-stroke: #a8dcc0;
+  --stls-sig-yellow: #b57500;
+  --stls-sig-yellow-ink: #7a5010;
+  --stls-sig-yellow-surface: #fff1cf;
+  --stls-sig-yellow-stroke: #e5b96a;
+  --stls-sig-red: #c42c2c;
+  --stls-sig-red-ink: #9a1c1c;
+  --stls-sig-red-surface: #fde9e9;
+  --stls-sig-red-stroke: #efb6b6;
+  --stls-danger: #c42c2c;
+  --stls-danger-ink: #9a1c1c;
+  --stls-danger-surface: #fde9e9;
+  --stls-danger-stroke: #efb6b6;
+  --stls-info-ink: #0f5b83;
+  --stls-scrollbar-track: #e2e6ea;
+  --stls-scrollbar-thumb: #b9c1ca;
+
+  /* Intersection diagram — engineering-CAD aesthetic for light theme. */
+  --stls-asphalt-0: #f4f6f8;
+  --stls-asphalt-1: #e6e9ec;
+  --stls-road-0: #ffffff;
+  --stls-road-1: #eef1f4;
+  --stls-lane-divider: #5a6676;
+  --stls-stop-bar: #2a3440;
+  --stls-crosswalk: #3a4450;
+  --stls-island: #e1e5ea;
+  --stls-island-stroke: #b9c1ca;
+  --stls-badge-fill: #ffffff;
+  --stls-badge-stroke: #c4ccd4;
+  color-scheme: light;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Studio semantic tokens — every utility below becomes theme-aware
+     (bg-surface-1, text-ink-0, border-stroke-1, ...). */
+  --color-surface-0: var(--stls-surface-0);
+  --color-surface-1: var(--stls-surface-1);
+  --color-surface-2: var(--stls-surface-2);
+  --color-surface-3: var(--stls-surface-3);
+  --color-canvas: var(--stls-canvas);
+  --color-ink-0: var(--stls-ink-0);
+  --color-ink-1: var(--stls-ink-1);
+  --color-ink-2: var(--stls-ink-2);
+  --color-ink-3: var(--stls-ink-3);
+  --color-stroke-0: var(--stls-stroke-0);
+  --color-stroke-1: var(--stls-stroke-1);
+  --color-stroke-2: var(--stls-stroke-2);
+  --color-hover: var(--stls-hover);
+  --color-accent: var(--stls-accent);
+  --color-accent-ink: var(--stls-accent-ink);
+  --color-accent-surface: var(--stls-accent-surface);
+  --color-accent-stroke: var(--stls-accent-stroke);
+  --color-sig-green: var(--stls-sig-green);
+  --color-sig-green-ink: var(--stls-sig-green-ink);
+  --color-sig-green-surface: var(--stls-sig-green-surface);
+  --color-sig-green-stroke: var(--stls-sig-green-stroke);
+  --color-sig-yellow: var(--stls-sig-yellow);
+  --color-sig-yellow-ink: var(--stls-sig-yellow-ink);
+  --color-sig-yellow-surface: var(--stls-sig-yellow-surface);
+  --color-sig-yellow-stroke: var(--stls-sig-yellow-stroke);
+  --color-sig-red: var(--stls-sig-red);
+  --color-sig-red-ink: var(--stls-sig-red-ink);
+  --color-sig-red-surface: var(--stls-sig-red-surface);
+  --color-sig-red-stroke: var(--stls-sig-red-stroke);
+  --color-danger: var(--stls-danger);
+  --color-danger-ink: var(--stls-danger-ink);
+  --color-danger-surface: var(--stls-danger-surface);
+  --color-danger-stroke: var(--stls-danger-stroke);
+  --color-info-ink: var(--stls-info-ink);
+
+  /* Diagram-specific tokens (used as fill-* / stroke-* on SVG). */
+  --color-asphalt-0: var(--stls-asphalt-0);
+  --color-asphalt-1: var(--stls-asphalt-1);
+  --color-road-0: var(--stls-road-0);
+  --color-road-1: var(--stls-road-1);
+  --color-lane-divider: var(--stls-lane-divider);
+  --color-stop-bar: var(--stls-stop-bar);
+  --color-crosswalk: var(--stls-crosswalk);
+  --color-island: var(--stls-island);
+  --color-island-stroke: var(--stls-island-stroke);
+  --color-badge-fill: var(--stls-badge-fill);
+  --color-badge-stroke: var(--stls-badge-stroke);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background: var(--background);
+  color: var(--foreground);
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  margin: 0;
+  background:
+    linear-gradient(180deg, rgba(57, 217, 138, 0.04), transparent 34%),
+    var(--background);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--stls-scrollbar-track, #0a1013);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--stls-scrollbar-thumb, #243136);
+  border-radius: 8px;
+}
+
+::selection {
+  background: rgba(255, 181, 71, 0.35);
+}
+
+@keyframes stls-pulse-ring {
+  0% {
+    transform: scale(0.85);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.1);
+    opacity: 0;
+  }
+}
+
+@keyframes stls-soft-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes stls-fade-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes stls-refresh-flash {
+  0% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.6);
+  }
+  100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+}
+
+@keyframes stls-flow-dash {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -32;
+  }
+}
+
+.stls-pulse-ring {
+  animation: stls-pulse-ring 1.9s ease-out infinite;
+}
+
+.stls-soft-blink {
+  animation: stls-soft-blink 1.6s ease-in-out infinite;
+}
+
+.stls-fade-slide {
+  animation: stls-fade-slide 280ms ease-out both;
+}
+
+.stls-refresh-flash {
+  animation: stls-refresh-flash 850ms ease-out;
+}
+
+.stls-flow-dash {
+  stroke-dasharray: 14 10;
+  animation: stls-flow-dash 900ms linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stls-pulse-ring,
+  .stls-soft-blink,
+  .stls-fade-slide,
+  .stls-refresh-flash,
+  .stls-flow-dash {
+    animation: none !important;
+  }
+}
+
+/*
+ * Command Platform light theme overrides.
+ *
+ * The command platform components hardcode a lot of dark hex colors.
+ * Rather than rewriting every file, we scope CSS overrides under
+ * [data-cmd-theme="light"] to re-paint the most visible surfaces:
+ * page chrome, panels, info windows, text tones, scrollbars, etc.
+ *
+ * This is a best-effort theme — deeper surfaces (modals, nested cards)
+ * keep their dark look. Refactoring every arbitrary Tailwind color to
+ * a token is the proper next step.
+ */
+[data-cmd-theme="light"] {
+  color: #1b2322;
+  --stls-scrollbar-track: #e2e6ea;
+  --stls-scrollbar-thumb: #b9c1ca;
+}
+
+/* Scrollbars inside the command platform follow the light palette. */
+[data-cmd-theme="light"] ::-webkit-scrollbar-track {
+  background: #e2e6ea;
+}
+[data-cmd-theme="light"] ::-webkit-scrollbar-thumb {
+  background: #b9c1ca;
+}
+
+/* Top bar and general chrome panels — deep backgrounds become white. */
+[data-cmd-theme="light"] .bg-\[\#070b0e\]\/92,
+[data-cmd-theme="light"] .bg-\[\#070b0e\]\/90,
+[data-cmd-theme="light"] .bg-\[\#070b0e\]\/85,
+[data-cmd-theme="light"] .bg-\[\#070b0e\],
+[data-cmd-theme="light"] .bg-\[\#0a1014\]\/95,
+[data-cmd-theme="light"] .bg-\[\#0a1014\]\/92,
+[data-cmd-theme="light"] .bg-\[\#0a1014\]\/90,
+[data-cmd-theme="light"] .bg-\[\#0a1014\]\/85,
+[data-cmd-theme="light"] .bg-\[\#0a1014\],
+[data-cmd-theme="light"] .bg-\[\#0b1014\] {
+  background-color: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Alternate panel tones. */
+[data-cmd-theme="light"] .bg-\[\#0c1216\],
+[data-cmd-theme="light"] .bg-\[\#0b1115\],
+[data-cmd-theme="light"] .bg-\[\#0c1116\],
+[data-cmd-theme="light"] .bg-\[\#0f171d\],
+[data-cmd-theme="light"] .bg-\[\#0a1317\],
+[data-cmd-theme="light"] .bg-\[\#0e151b\] {
+  background-color: #f4f6f8 !important;
+}
+
+[data-cmd-theme="light"] .bg-\[\#07100d\],
+[data-cmd-theme="light"] .bg-\[\#07100d\]\/82,
+[data-cmd-theme="light"] .bg-\[\#0b1512\] {
+  background-color: #ffffff !important;
+}
+
+/* Main text tones — off-white → near-black. */
+[data-cmd-theme="light"] .text-\[\#edf3ee\],
+[data-cmd-theme="light"] .text-\[\#f7f3ea\],
+[data-cmd-theme="light"] .text-\[\#f1f6f2\],
+[data-cmd-theme="light"] .text-\[\#f6faf5\],
+[data-cmd-theme="light"] .text-\[\#d9e3dc\],
+[data-cmd-theme="light"] .text-\[\#d8dedb\] {
+  color: #1b2322 !important;
+}
+
+/* Secondary text. */
+[data-cmd-theme="light"] .text-\[\#c3cdc6\] {
+  color: #3a4a44 !important;
+}
+
+/* Muted text. */
+[data-cmd-theme="light"] .text-\[\#8fa39a\],
+[data-cmd-theme="light"] .text-\[\#8fa69a\],
+[data-cmd-theme="light"] .text-\[\#8a978d\],
+[data-cmd-theme="light"] .text-\[\#7c8b83\],
+[data-cmd-theme="light"] .text-\[\#6b7c74\],
+[data-cmd-theme="light"] .text-\[\#3e4a44\] {
+  color: #56605b !important;
+}
+
+/* Borders: replace low-alpha white borders with low-alpha black. */
+[data-cmd-theme="light"] .border-white\/6,
+[data-cmd-theme="light"] .border-white\/8,
+[data-cmd-theme="light"] .border-white\/10,
+[data-cmd-theme="light"] .border-white\/12,
+[data-cmd-theme="light"] .border-white\/15,
+[data-cmd-theme="light"] .border-white\/18,
+[data-cmd-theme="light"] .border-white\/20 {
+  border-color: rgba(13, 24, 36, 0.12) !important;
+}
+
+[data-cmd-theme="light"] .hover\:border-white\/12:hover,
+[data-cmd-theme="light"] .hover\:border-white\/18:hover,
+[data-cmd-theme="light"] .hover\:border-white\/20:hover {
+  border-color: rgba(13, 24, 36, 0.22) !important;
+}
+
+[data-cmd-theme="light"] .hover\:bg-white\/5:hover {
+  background-color: rgba(13, 24, 36, 0.05) !important;
+}
+
+/* Thin dividers. */
+[data-cmd-theme="light"] .bg-white\/8 {
+  background-color: rgba(13, 24, 36, 0.1) !important;
+}
+
+/* Accent (warm amber) panel surface — keep warm but lighter. */
+[data-cmd-theme="light"] .bg-\[\#14100a\],
+[data-cmd-theme="light"] .bg-\[\#14100a\]\/90,
+[data-cmd-theme="light"] .bg-\[\#141008\],
+[data-cmd-theme="light"] .bg-\[\#141008\]\/90 {
+  background-color: #fff4db !important;
+  color: #7a4400 !important;
+}
+
+[data-cmd-theme="light"] .border-\[\#3c2e10\],
+[data-cmd-theme="light"] .border-\[\#5c4418\],
+[data-cmd-theme="light"] .border-\[\#5c4418\]\/70,
+[data-cmd-theme="light"] .border-\[\#5a4218\] {
+  border-color: #e8b56b !important;
+}
+
+/* Alert red surface — pale red instead of near-black. */
+[data-cmd-theme="light"] .bg-\[\#180d0d\],
+[data-cmd-theme="light"] .bg-\[\#180d0d\]\/60,
+[data-cmd-theme="light"] .bg-\[\#180d0d\]\/70,
+[data-cmd-theme="light"] .bg-\[\#180d0d\]\/80,
+[data-cmd-theme="light"] .bg-\[\#180d0d\]\/90,
+[data-cmd-theme="light"] .bg-\[\#180d0d\]\/92,
+[data-cmd-theme="light"] .bg-\[\#1a0e0e\],
+[data-cmd-theme="light"] .bg-\[\#110606\]\/70,
+[data-cmd-theme="light"] .bg-\[\#241313\] {
+  background-color: #fde9e9 !important;
+  color: #9a1c1c !important;
+}
+
+[data-cmd-theme="light"] .border-\[\#5a1d1d\],
+[data-cmd-theme="light"] .border-\[\#5a1d1d\]\/50,
+[data-cmd-theme="light"] .border-\[\#6d2929\]\/70 {
+  border-color: #efb6b6 !important;
+}
+
+/* Info (soft blue). */
+[data-cmd-theme="light"] .bg-\[\#0d1519\],
+[data-cmd-theme="light"] .bg-\[\#17121e\] {
+  background-color: #e8f2f7 !important;
+  color: #0f5b83 !important;
+}
+[data-cmd-theme="light"] .border-\[\#24546a\],
+[data-cmd-theme="light"] .border-\[\#24546a\]\/50,
+[data-cmd-theme="light"] .border-\[\#4a3d62\] {
+  border-color: #9fc5d6 !important;
+}
+
+/* Success/green (running / healthy). */
+[data-cmd-theme="light"] .bg-\[\#0d1913\],
+[data-cmd-theme="light"] .bg-\[\#0d1913\]\/80 {
+  background-color: #e4f7ec !important;
+  color: #0a5732 !important;
+}
+[data-cmd-theme="light"] .border-\[\#1d4a34\] {
+  border-color: #a8dcc0 !important;
+}
+
+/* Deepest black-outs (used behind overlays / fallback map). */
+[data-cmd-theme="light"] .bg-\[\#070b0d\],
+[data-cmd-theme="light"] .bg-\[\#050907\],
+[data-cmd-theme="light"] .bg-black {
+  background-color: #f3f1ea !important;
+}
+
+/* Shadows on cards — soften for light. */
+[data-cmd-theme="light"] .shadow-\[0_30px_80px_rgba\(0\,0\,0\,0\.5\)\],
+[data-cmd-theme="light"] .shadow-\[0_20px_40px_rgba\(0\,0\,0\,0\.32\)\],
+[data-cmd-theme="light"] .shadow-\[0_16px_32px_rgba\(0\,0\,0\,0\.24\)\],
+[data-cmd-theme="light"] .shadow-\[0_16px_32px_rgba\(0\,0\,0\,0\.4\)\],
+[data-cmd-theme="light"] .shadow-\[0_18px_36px_rgba\(0\,0\,0\,0\.34\)\] {
+  box-shadow: 0 8px 24px rgba(13, 24, 36, 0.08) !important;
+}
+
+/* Gradients at the bottom/top of the map darken edges — invert. */
+[data-cmd-theme="light"] .from-\[\#030405\]\/90,
+[data-cmd-theme="light"] .from-\[\#030405\]\/80 {
+  --tw-gradient-from: rgba(247, 244, 236, 0.9) !important;
+}
+[data-cmd-theme="light"] .via-\[\#030405\]\/35,
+[data-cmd-theme="light"] .via-\[\#030405\]\/20 {
+  --tw-gradient-via: rgba(247, 244, 236, 0.3) !important;
+}

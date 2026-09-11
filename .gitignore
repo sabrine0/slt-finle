@@ -1,0 +1,59 @@
+frontend/node_modules
+frontend/.next
+frontend/.env
+frontend/.env.local
+backend/node_modules
+backend/dist
+backend/.env
+backend/.env.local
+coverage
+
+# runtime logs — keep out of repo
+logs/
+*.log
+*.err.log
+
+# controller-runtime artifacts
+controller-runtime/controller.exe
+controller-runtime/runtime.log
+controller-runtime/controller.log
+controller-runtime/cycle-proof.log
+controller-runtime/startup-proof.log
+controller-runtime/cache/
+
+# test artifacts
+test-results/
+
+# editor/OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# dependencies (any depth)
+node_modules/
+
+# local env files (any depth) — never commit secrets
+.env
+.env.*
+!.env.example
+
+# PGlite local database data
+.pglite-*/
+.pglite-*.mjs
+
+# scratch / QA temp
+.qa-temp/
+
+# build output
+frontend/.next/
+dist/
+build/
+
+# vendored third-party binaries
+tools/cloudflared.exe
+controller-runtime/controller-linux
+
+# playwright recordings/traces
+**/.recordings/

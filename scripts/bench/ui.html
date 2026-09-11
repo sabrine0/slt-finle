@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>STLS Virtual Bench</title>
+    <style>
+      :root {
+        --bg: #0e1116;
+        --panel: #161b22;
+        --panel-2: #1c232c;
+        --line: #2a323d;
+        --text: #e6edf3;
+        --dim: #8b949e;
+        --ok: #3fb950;
+        --warn: #d29922;
+        --bad: #f85149;
+        --accent: #58a6ff;
+        --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 14px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+      }
+      header {
+        padding: 14px 20px;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex-wrap: wrap;
+        background: var(--panel);
+      }
+      h1 { font-size: 16px; margin: 0; letter-spacing: .2px; }
+      h1 span { color: var(--dim); font-weight: 400; }
+      .stack { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+      .chip {
+        font: 11px/1 var(--mono);
+        padding: 6px 9px;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: var(--panel-2);
+        color: var(--dim);
+        display: flex; align-items: center; gap: 6px;
+      }
+      .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--dim); }
+      .dot.up { background: var(--ok); box-shadow: 0 0 6px var(--ok); }
+      .dot.down { background: var(--bad); }
+
+      main {
+        display: grid;
+        grid-template-columns: 320px 1fr 380px;
+        gap: 14px;
+        padding: 14px;
+        align-items: start;
+      }
+      @media (max-width: 1300px) { main { grid-template-columns: 1fr; } }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .panel > h2 {
+        margin: 0;
+        padding: 10px 14px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: .8px;
+        color: var(--dim);
+        border-bottom: 1px solid var(--line);
+        background: var(--panel-2);
+      }
+      .panel > .body { padding: 12px 14px; }
+
+      /* scenarios */
+      .scn {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px 11px;
+        margin-bottom: 9px;
+        background: var(--panel-2);
+        cursor: pointer;
+        transition: border-color .15s, transform .05s;
+      }
+      .scn:hover { border-color: var(--accent); }
+      .scn:active { transform: translateY(1px); }
+      .scn.running { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+      .scn.done { border-color: var(--ok); }
+      .scn.failed { border-color: var(--bad); }
+      .scn .t { font-weight: 600; font-size: 13px; display: flex; gap: 8px; align-items: center; }
+      .scn .b { color: var(--dim); font-size: 12px; margin-top: 5px; }
+      .scn .e {
+        margin-top: 7px; font: 11px/1.4 var(--mono);
+        color: var(--accent); opacity: .85;
+        border-left: 2px solid var(--line); padding-left: 7px;
+      }
+      .badge { font: 10px/1 var(--mono); padding: 3px 6px; border-radius: 4px; background: var(--line); color: var(--dim); }
+      .badge.done { background: rgba(63,185,80,.15); color: var(--ok); }
+      .badge.failed { background: rgba(248,81,73,.15); color: var(--bad); }
+      .badge.running { background: rgba(88,166,255,.15); color: var(--accent); }
+      button.all {
+        width: 100%; padding: 9px; margin-bottom: 12px;
+        background: var(--accent); color: #06121f; border: 0;
+        border-radius: 7px; font-weight: 700; cursor: pointer; font-size: 13px;
+      }
+      button.all:hover { filter: brightness(1.1); }
+
+      /* junction */
+      .junction { display: flex; gap: 22px; align-items: center; justify-content: center; padding: 6px 0 14px; flex-wrap: wrap; }
+      .head { text-align: center; }
+      .head .lbl { font: 11px var(--mono); color: var(--dim); margin-bottom: 6px; }
+      .lamps {
+        background: #0a0d11; border: 1px solid var(--line);
+        border-radius: 9px; padding: 7px; display: flex; flex-direction: column; gap: 6px;
+      }
+      .lamp { width: 24px; height: 24px; border-radius: 50%; background: #20262e; transition: background .12s, box-shadow .12s; }
+      .lamp.r.on { background: #f85149; box-shadow: 0 0 12px #f85149; }
+      .lamp.y.on { background: #d29922; box-shadow: 0 0 12px #d29922; }
+      .lamp.g.on { background: #3fb950; box-shadow: 0 0 12px #3fb950; }
+      .boardstate { text-align: center; font: 12px var(--mono); color: var(--accent); padding-bottom: 10px; }
+
+      /* saturation */
+      .sat { margin-bottom: 9px; }
+      .sat .row { display: flex; justify-content: space-between; font: 11px var(--mono); color: var(--dim); margin-bottom: 3px; }
+      .bar { height: 8px; background: var(--panel-2); border-radius: 4px; overflow: hidden; }
+      .bar > i { display: block; height: 100%; background: var(--ok); transition: width .3s; }
+      .bar > i.warn { background: var(--warn); }
+      .bar > i.bad { background: var(--bad); }
+      .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+      .kv { font: 11px var(--mono); background: var(--panel-2); border: 1px solid var(--line); border-radius: 5px; padding: 4px 7px; color: var(--dim); }
+      .kv b { color: var(--text); font-weight: 600; }
+
+      /* decisions */
+      .dec { border-left: 3px solid var(--accent); padding: 7px 10px; margin-bottom: 8px; background: var(--panel-2); border-radius: 0 6px 6px 0; }
+      .dec.warning { border-left-color: var(--warn); }
+      .dec.critical { border-left-color: var(--bad); }
+      .dec .k { font: 12px var(--mono); font-weight: 700; }
+      .dec .who { color: var(--dim); font-size: 11px; }
+      .dec .r { color: var(--dim); font-size: 12px; margin-top: 4px; }
+
+      /* log */
+      #log { height: 340px; overflow-y: auto; font: 12px/1.55 var(--mono); padding: 10px 12px; }
+      .ln { display: flex; gap: 8px; padding: 1px 0; }
+      .ln .ts { color: #56606b; flex-shrink: 0; }
+      .ln.step  { color: var(--accent); font-weight: 600; margin-top: 6px; }
+      .ln.ok    { color: var(--ok); }
+      .ln.warn  { color: var(--warn); }
+      .ln.bad   { color: var(--bad); }
+      .ln.info  { color: var(--text); }
+      .empty { color: var(--dim); font-style: italic; padding: 4px 0; }
+      code { background: var(--panel-2); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>STLS Virtual Bench <span>— the whole platform, no hardware</span></h1>
+      <div class="stack" id="stack"></div>
+    </header>
+
+    <main>
+      <!-- LEFT: scenarios -->
+      <div>
+        <div class="panel">
+          <h2>Scenarios</h2>
+          <div class="body">
+            <button class="all" onclick="runAll()">▶ Run every scenario</button>
+            <div id="scenarios"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CENTRE: junction + live log -->
+      <div>
+        <div class="panel" style="margin-bottom: 14px">
+          <h2>Virtual junction — the ESP32 board's 12 lamps</h2>
+          <div class="body">
+            <div class="boardstate" id="boardstate">waiting for board…</div>
+            <div class="junction" id="junction"></div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>Live trace — everything the system actually did</h2>
+          <div id="log"><div class="empty" style="padding:10px 12px">Waiting for a scenario…</div></div>
+        </div>
+      </div>
+
+      <!-- RIGHT: measurements -->
+      <div>
+        <div class="panel" style="margin-bottom: 14px">
+          <h2>Measured saturation</h2>
+          <div class="body" id="sat"><div class="empty">No analysis yet.</div></div>
+        </div>
+
+        <div class="panel" style="margin-bottom: 14px">
+          <h2>AI decisions</h2>
+          <div class="body" id="dec"><div class="empty">No agent run yet.</div></div>
+        </div>
+
+        <div class="panel">
+          <h2>Field commands</h2>
+          <div class="body" id="cmd"><div class="empty">No commands yet.</div></div>
+        </div>
+      </div>
+    </main>
+
+    <script>
+      const DIRS = ['N', 'S', 'E', 'W'];
+      const $ = (id) => document.getElementById(id);
+
+      // ── junction lamps ───────────────────────────────────────────
+      $('junction').innerHTML = DIRS.map(
+        (d) => `
+        <div class="head">
+          <div class="lbl">${d}</div>
+          <div class="lamps">
+            <div class="lamp r" id="l-${d}-r"></div>
+            <div class="lamp y" id="l-${d}-y"></div>
+            <div class="lamp g" id="l-${d}-g"></div>
+          </div>
+        </div>`,
+      ).join('');
+
+      function renderBoard(board) {
+        if (!board) return;
+        $('boardstate').textContent = board.state ?? '—';
+        const lights = board.lights;
+        if (!lights) return;
+        for (const d of DIRS) {
+          const cell = lights[d] ?? {};
+          $(`l-${d}-r`).classList.toggle('on', cell.red === 'ON');
+          $(`l-${d}-y`).classList.toggle('on', cell.yellow === 'ON');
+          $(`l-${d}-g`).classList.toggle('on', cell.green === 'ON');
+        }
+      }
+
+      // ── stack chips ──────────────────────────────────────────────
+      const NAMES = {
+        bridge: 'database :5433',
+        backend: 'backend :4010',
+        esp: 'board :8090',
+        frontend: 'app :3000',
+        bench: 'bench :9100',
+      };
+      function renderStack(stack) {
+        $('stack').innerHTML = Object.entries(stack)
+          .map(
+            ([k, v]) =>
+              `<div class="chip"><span class="dot ${v.up ? 'up' : 'down'}"></span>${
+                NAMES[k] ?? k
+              }</div>`,
+          )
+          .join('');
+      }
+
+      // ── scenarios ────────────────────────────────────────────────
+      function renderScenarios(list) {
+        $('scenarios').innerHTML = list
+          .map(
+            (s) => `
+          <div class="scn ${s.status}" onclick="runOne('${s.id}')">
+            <div class="t">
+              ${s.title}
+              <span class="badge ${s.status}" style="margin-left:auto">${
+                s.status === 'done' && s.durationMs
+                  ? (s.durationMs / 1000).toFixed(1) + 's'
+                  : s.status
+              }</span>
+            </div>
+            <div class="b">${s.blurb}</div>
+            <div class="e">expect: ${s.expect}</div>
+          </div>`,
+          )
+          .join('');
+      }
+
+      async function runOne(id) {
+        await fetch('/run?id=' + encodeURIComponent(id), { method: 'POST' });
+      }
+      async function runAll() {
+        await fetch('/run?id=__all__', { method: 'POST' });
+      }
+
+      // ── saturation ───────────────────────────────────────────────
+      function renderSat(s) {
+        if (!s) return;
+        const cls = (x) => (x >= 0.9 ? 'bad' : x >= 0.7 ? 'warn' : '');
+        $('sat').innerHTML =
+          s.approaches
+            .map(
+              (a) => `
+          <div class="sat">
+            <div class="row"><span>${a.direction} — ${a.inflowVph ?? '?'} veh/h</span>
+              <span>X≈${a.saturation.toFixed(2)}</span></div>
+            <div class="bar"><i class="${cls(a.saturation)}" style="width:${Math.min(
+              100,
+              a.saturation * 100,
+            ).toFixed(0)}%"></i></div>
+          </div>`,
+            )
+            .join('') +
+          `<div class="meta">
+             <div class="kv">level <b>${s.level ?? '?'}</b></div>
+             <div class="kv">action <b>${s.action ?? '?'}</b></div>
+             <div class="kv">cycle <b>${s.cycleSeconds ?? '?'}s → ${
+               s.recommendedCycleSeconds ?? '?'
+             }s</b></div>
+           </div>`;
+      }
+
+      // ── decisions ────────────────────────────────────────────────
+      function renderDec(list) {
+        if (!list || list.length === 0) {
+          $('dec').innerHTML = '<div class="empty">Agents ran, no decision produced.</div>';
+          return;
+        }
+        $('dec').innerHTML = list
+          .map(
+            (d) => `
+          <div class="dec ${d.severity}">
+            <div class="k">${d.kind}</div>
+            <div class="who">${d.agentId} · ${d.severity}</div>
+            <div class="r">${(d.rationale || []).slice(0, 2).join(' ')}</div>
+          </div>`,
+          )
+          .join('');
+      }
+
+      // ── commands ─────────────────────────────────────────────────
+      function renderCmd(list) {
+        if (!list || list.length === 0) {
+          $('cmd').innerHTML = '<div class="empty">No field commands queued.</div>';
+          return;
+        }
+        $('cmd').innerHTML = list
+          .map(
+            (c) => `<div class="dec"><div class="k">${c.kind}</div>
+              <div class="who">${c.scopeRef ?? ''} · ${c.status}</div></div>`,
+          )
+          .join('');
+      }
+
+      // ── log ──────────────────────────────────────────────────────
+      let logCleared = false;
+      function appendLog(e) {
+        const box = $('log');
+        if (!logCleared) {
+          box.innerHTML = '';
+          logCleared = true;
+        }
+        const line = document.createElement('div');
+        line.className = 'ln ' + (e.tone || 'info');
+        const ts = new Date(e.at).toLocaleTimeString();
+        line.innerHTML = `<span class="ts">${ts}</span><span>${escapeHtml(e.text)}</span>`;
+        box.appendChild(line);
+        box.scrollTop = box.scrollHeight;
+      }
+      function escapeHtml(s) {
+        return String(s).replace(
+          /[&<>"]/g,
+          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
+        );
+      }
+
+      // ── SSE ──────────────────────────────────────────────────────
+      const es = new EventSource('/events');
+      es.onmessage = (msg) => {
+        const { type, payload } = JSON.parse(msg.data);
+        if (type === 'snapshot') {
+          renderStack(payload.stack);
+          renderScenarios(payload.scenarios);
+          renderBoard({ state: payload.espState, lights: payload.lights });
+          renderSat(payload.saturation);
+          renderDec(payload.decisions);
+          renderCmd(payload.commands);
+          payload.events.forEach(appendLog);
+        } else if (type === 'stack') renderStack(payload);
+        else if (type === 'scenarios') renderScenarios(payload);
+        else if (type === 'board') renderBoard(payload);
+        else if (type === 'saturation') renderSat(payload);
+        else if (type === 'decisions') renderDec(payload);
+        else if (type === 'commands') renderCmd(payload);
+        else if (type === 'event') appendLog(payload);
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "name": "stls-tools",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "deck": "node generate-deck.mjs",
+    "capture": "node capture-screenshots.mjs",
+    "all": "node capture-screenshots.mjs && node generate-deck.mjs"
+  },
+  "dependencies": {
+    "pptxgenjs": "^3.12.0",
+    "puppeteer": "^23.0.0"
+  }
+}

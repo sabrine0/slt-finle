@@ -1,0 +1,28 @@
+{
+  "name": "stls-hybrid",
+  "private": true,
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "db:up": "docker compose up -d postgres",
+    "db:down": "docker compose down",
+    "db:migrate": "npm --prefix backend run migration:run",
+    "db:migrate:revert": "npm --prefix backend run migration:revert",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:desktop": "node desktop/scripts/dev.cjs",
+    "dev:backend": "npm --prefix backend run start:dev",
+    "dev:mobile": "cd mobile && flutter run",
+    "mobile:build:android": "cd mobile && flutter build apk --release",
+    "mobile:build:ios": "cd mobile && flutter build ios --release",
+    "build": "npm --prefix frontend run build && npm --prefix backend run build",
+    "build:frontend": "npm --prefix frontend run build",
+    "start:desktop": "node desktop/scripts/prod.cjs",
+    "lint": "npm --prefix frontend run lint && npm --prefix backend run lint",
+    "test": "npm --prefix backend run test -- --runInBand",
+    "bench": "node scripts/bench/bench.mjs",
+    "bench:no-ui": "node scripts/bench/bench.mjs --no-frontend",
+    "bench:auto": "node scripts/bench/bench.mjs --run-all"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0"
+  }
+}

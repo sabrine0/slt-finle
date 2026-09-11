@@ -1,0 +1,24 @@
+{
+  "mode": "dry_run",
+  "flashInterval": "500ms",
+  "signalGroups": {
+    "SG-001": {
+      "aspects": {
+        "red": { "channel": "DO1", "activeHigh": true },
+        "yellow": { "channel": "DO2", "activeHigh": true },
+        "green": { "channel": "DO3", "activeHigh": true }
+      }
+    },
+    "SG-002": {
+      "aspects": {
+        "red": { "channel": "DO4", "activeHigh": true },
+        "yellow": { "channel": "DO5", "activeHigh": true },
+        "green": { "channel": "DO6", "activeHigh": true }
+      }
+    }
+  },
+  "detectors": {
+    "DET-001": { "channel": "DI1", "activeHigh": true },
+    "DET-002": { "channel": "DI2", "activeHigh": true }
+  }
+}

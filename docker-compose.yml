@@ -1,0 +1,21 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: stls-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: stls_hybrid
+      POSTGRES_USER: stls
+      POSTGRES_PASSWORD: stls_dev_password
+    ports:
+      - '5433:5432'
+    volumes:
+      - stls_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U stls -d stls_hybrid']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  stls_postgres_data:
